@@ -4,10 +4,6 @@
     "selected_eyes": "Round",
     "selected_mouth": "Curved"
   },
-  "font_settings": {
-    "style": "Roboto",
-    "size": 30
-  },
   "default_colors": {
     "primary": [
       0.1,
@@ -35,13 +31,15 @@
       "repeat_settings": "daily",
       "is_active": true,
       "accent": [
-        0.1,
-        0.9,
+        0.2,
+        0.78,
         1.0,
         1.0
       ],
       "mood": "happy",
-      "description": "Stay hydrated!"
+      "description": "Stay hydrated!",
+      "action": "drink",
+      "reminder_template": "drink"
     },
     {
       "id": "be4878f8-63d7-456f-9599-4279cfe71116",
@@ -55,18 +53,70 @@
       "repeat_settings": "daily",
       "is_active": true,
       "accent": [
-        0.15,
         1.0,
-        0.55,
+        0.35,
+        0.72,
         1.0
       ],
       "mood": "calm",
-      "description": "Take a break and move around"
+      "description": "Take a break and move around",
+      "action": "stretch",
+      "reminder_template": "break"
+    },
+    {
+      "id": "ae7b4182-6389-40f7-a043-b7b26c53e40a",
+      "text": "Move your body",
+      "action": "move",
+      "icon": null,
+      "icon_path": null,
+      "face_expression": null,
+      "trigger_type": "Every X Minutes",
+      "trigger_time": null,
+      "interval_minutes": 90,
+      "repeat_settings": "daily",
+      "is_active": true,
+      "accent": [
+        1.0,
+        0.72,
+        0.12,
+        1.0
+      ],
+      "mood": "happy",
+      "description": "Walk, step side-to-side, or dance for a minute!",
+      "reminder_template": "move"
+    },
+    {
+      "id": "63de369d-8bdc-402e-91e7-76c5e5c5f8e1",
+      "reminder_template": "focus",
+      "text": "Focus",
+      "action": "focus",
+      "icon": null,
+      "icon_path": null,
+      "face_expression": null,
+      "trigger_type": "Every X Minutes",
+      "trigger_time": null,
+      "interval_minutes": 25,
+      "repeat_settings": "daily",
+      "is_active": false,
+      "accent": [
+        0.58,
+        0.38,
+        0.98,
+        1.0
+      ],
+      "mood": "focused",
+      "description": "Deep work \u2014 minimize distractions for this block."
     }
   ],
   "last_fired": {
-    "b98e8401-6b74-490f-8e18-8864c84b7b68": 1770869798.524891,
-    "be4878f8-63d7-456f-9599-4279cfe71116": 1770869738.509013
+    "b98e8401-6b74-490f-8e18-8864c84b7b68": 1774222941.673125,
+    "be4878f8-63d7-456f-9599-4279cfe71116": 1774222851.637821,
+    "ae7b4182-6389-40f7-a043-b7b26c53e40a": 1774218709.050186,
+    "63de369d-8bdc-402e-91e7-76c5e5c5f8e1": 1774214247.530052
   },
-  "default_reminders_added": true
+  "default_reminders_added": true,
+  "font_settings": {
+    "style": "Roboto",
+    "size": 30
+  }
 }

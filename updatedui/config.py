@@ -21,6 +21,71 @@ def get_config_path():
 
 CONFIG_FILE = get_config_path()
 
+# Built-in wellness reminders (dropdown templates). Keys are stable IDs saved as reminder_template.
+REMINDER_PRESET_ORDER = ("drink", "move", "focus", "break")
+REMINDER_PRESETS = {
+    "drink": {
+        "label": "Drink water",
+        "text": "Drink water",
+        "action": "drink",
+        "accent": [0.20, 0.78, 1.00, 1.0],
+        "mood": "happy",
+        "description": "Stay hydrated!",
+        "default_interval": 45,
+    },
+    "move": {
+        "label": "Move your body",
+        "text": "Move your body",
+        "action": "move",
+        "accent": [1.00, 0.72, 0.12, 1.0],
+        "mood": "happy",
+        "description": "Walk, stretch, or change posture for a minute.",
+        "default_interval": 60,
+    },
+    "focus": {
+        "label": "Focus",
+        "text": "Focus",
+        "action": "focus",
+        "accent": [0.58, 0.38, 0.98, 1.0],
+        "mood": "focused",
+        "description": "Deep work — minimize distractions for this block.",
+        "default_interval": 25,
+    },
+    "break": {
+        "label": "Take a break",
+        "text": "Take a break",
+        "action": "stretch",
+        "accent": [1.00, 0.55, 0.30, 1.0],
+        "mood": "calm",
+        "description": "Rest your eyes and stretch. You earned it.",
+        "default_interval": 50,
+    },
+}
+
+
+def create_preset_reminder(preset_id):
+    """New reminder dict for a built-in preset (caller saves into config)."""
+    if preset_id not in REMINDER_PRESETS:
+        preset_id = "drink"
+    p = REMINDER_PRESETS[preset_id]
+    return {
+        "id": str(uuid.uuid4()),
+        "reminder_template": preset_id,
+        "text": p["text"],
+        "action": p["action"],
+        "icon": None,
+        "icon_path": None,
+        "face_expression": None,
+        "trigger_type": "Every X Minutes",
+        "trigger_time": None,
+        "interval_minutes": p["default_interval"],
+        "repeat_settings": "daily",
+        "is_active": True,
+        "accent": list(p["accent"]),
+        "mood": p["mood"],
+        "description": p["description"],
+    }
+
 
 def deep_merge(default, loaded):
     """
@@ -56,10 +121,6 @@ class ConfigManager:
             "face_customization": {
                 "selected_eyes": None,      # nullable - can be None or a string identifier
                 "selected_mouth": None       # nullable - can be None or a string identifier
-            },
-            "font_settings": {
-                "style": "Roboto",           # default font style
-                "size": 30                   # default font size in sp
             },
             "default_colors": {
                 "primary": [0.10, 0.90, 1.00, 1.0],    # default accent color
@@ -121,67 +182,47 @@ class ConfigManager:
         self.save_config()
     
     def ensure_default_reminders(self):
-        """Add default reminders if they haven't been added yet, or update intervals if they exist."""
-        reminders = self.config.get("reminders", [])
-        
-        # Check if default reminders already exist
-        drink_water_exists = False
-        stretch_exists = False
+        """Ensure four built-in presets exist (drink, move, focus, break) and assign reminder_template."""
+        reminders = list(self.config.get("reminders", []))
+        changed = False
+
+        text_to_template = {
+            "drink water": "drink",
+            "move your body": "move",
+            "focus": "focus",
+            "take a break": "break",
+            "get up and stretch": "break",
+        }
+
         for reminder in reminders:
-            if reminder.get("text") == "Drink water":
-                drink_water_exists = True
-                # Update interval to 1 minute for testing
-                reminder["interval_minutes"] = 1
-            elif reminder.get("text") == "Get up and stretch":
-                stretch_exists = True
-                # Update interval to 2 minutes for testing
-                reminder["interval_minutes"] = 2
-        
-        # Add missing default reminders
-        default_reminders = []
-        if not drink_water_exists:
-            default_reminders.append({
-                "id": str(uuid.uuid4()),
-                "text": "Drink water",
-                "action": "drink",  # Kivy-drawn stick figure (no image file needed)
-                "icon": None,
-                "icon_path": "assets/icons/drink_water.png",  # Optional fallback if file exists
-                "face_expression": None,
-                "trigger_type": "Every X Minutes",
-                "trigger_time": None,
-                "interval_minutes": 1,  # Every 1 minute (for testing)
-                "repeat_settings": "daily",
-                "is_active": True,
-                "accent": [0.10, 0.90, 1.00, 1.0],  # Blue
-                "mood": "happy",
-                "description": "Stay hydrated!"
-            })
-        if not stretch_exists:
-            default_reminders.append({
-                "id": str(uuid.uuid4()),
-                "text": "Get up and stretch",
-                "action": "stretch",  # Kivy-drawn stick figure (no image file needed)
-                "icon": None,
-                "icon_path": "assets/icons/stretch.png",  # Optional fallback if file exists
-                "face_expression": None,
-                "trigger_type": "Every X Minutes",
-                "trigger_time": None,
-                "interval_minutes": 2,  # Every 2 minutes (for testing)
-                "repeat_settings": "daily",
-                "is_active": True,
-                "accent": [0.15, 1.00, 0.55, 1.0],  # Green
-                "mood": "calm",
-                "description": "Take a break and move around"
-            })
-        
-        if default_reminders:
-            reminders.extend(default_reminders)
+            if reminder.get("reminder_template") in REMINDER_PRESET_ORDER:
+                continue
+            key = (reminder.get("text") or "").strip().lower()
+            if key in text_to_template:
+                reminder["reminder_template"] = text_to_template[key]
+                changed = True
+
+        seen_templates = set()
+        deduped = []
+        for reminder in reminders:
+            tid = reminder.get("reminder_template")
+            if tid in REMINDER_PRESET_ORDER:
+                if tid in seen_templates:
+                    changed = True
+                    continue
+                seen_templates.add(tid)
+            deduped.append(reminder)
+        reminders = deduped
+
+        for preset_id in REMINDER_PRESET_ORDER:
+            if any(r.get("reminder_template") == preset_id for r in reminders):
+                continue
+            reminders.append(create_preset_reminder(preset_id))
+            changed = True
+
+        if changed:
             self.config["reminders"] = reminders
             self.config["default_reminders_added"] = True
-            self.save_config()
-        elif drink_water_exists or stretch_exists:
-            # Updated existing reminders - save the changes
-            self.config["reminders"] = reminders
             self.save_config()
 
 

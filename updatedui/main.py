@@ -12,11 +12,11 @@ from config import config_manager
 from screens import (
     WelcomeScreen,
     SetupFaceScreen,
-    SetupFontScreen,
     SetupColorsScreen,
     Homescreen,
     SettingsScreen,
-    RemindersScreen
+    RemindersScreen,
+    ReminderEditScreen,
 )
 
 
@@ -39,11 +39,11 @@ class PreviewApp(App):
         # Add all screens
         sm.add_widget(WelcomeScreen(name="welcome"))
         sm.add_widget(SetupFaceScreen(name="setup_face"))
-        sm.add_widget(SetupFontScreen(name="setup_font"))
         sm.add_widget(SetupColorsScreen(name="setup_colors"))
         sm.add_widget(Homescreen(name="homescreen"))
         sm.add_widget(SettingsScreen(name="settings"))
         sm.add_widget(RemindersScreen(name="reminders"))
+        sm.add_widget(ReminderEditScreen(name="reminder_edit"))
         
         # Check if first-time setup is needed
         if not config_manager.get("first_time_setup_complete", False):
@@ -92,6 +92,14 @@ class PreviewApp(App):
                     homescreen = sm.get_screen("homescreen")
                     if hasattr(homescreen, 'next_card'):
                         homescreen.next_card()
+            elif codepoint in ('1', '2', '3', '0'):
+                # Demo assistant face modes on homescreen: 1 thinking, 2 listening, 3 talking, 0 idle
+                if sm.current == "homescreen":
+                    hs = sm.get_screen("homescreen")
+                    face = getattr(hs, "face", None)
+                    if face and getattr(face, "opacity", 0) > 0.5:
+                        modes = {"1": "thinking", "2": "listening", "3": "talking", "0": "idle"}
+                        face.set_interaction_state(modes[codepoint])
         
         Window.bind(on_key_down=on_key)
         
