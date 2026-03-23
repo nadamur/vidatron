@@ -1,0 +1,20 @@
+{
+  "project_root": "/Users/rahmahelkadri/Documents/AI_PIbot /pibot_local_agent",
+  "assets_path": "/Users/rahmahelkadri/Documents/AI_PIbot /pibot_local_agent/assets/face",
+  "piper_voice": "/Users/rahmahelkadri/Documents/AI_PIbot /pibot_local_agent/piper/voices/en_GB-semaine-medium.onnx",
+  "whisper_path": "/Users/rahmahelkadri/Documents/AI_PIbot /pibot_local_agent/whisper.cpp/build/bin/whisper-cli",
+  "whisper_model": "/Users/rahmahelkadri/Documents/AI_PIbot /pibot_local_agent/whisper.cpp/models/ggml-base.en.bin",
+  "chat_model": "qwen2.5:1.5b",
+  "wake_word_model": "/Users/rahmahelkadri/Documents/AI_PIbot /pibot_local_agent/models/wake_word/Hey_veedatron.onnx",
+  "wake_word_threshold": 0.5,
+  "mic_sample_rate": 48000,
+  "target_sample_rate": 16000,
+  "local_soul_path": "/Users/rahmahelkadri/Documents/AI_PIbot /pibot_local_agent/config/local_soul.md",
+  "cloud_soul_path": "/Users/rahmahelkadri/Documents/AI_PIbot /pibot_local_agent/config/cloud_soul.md",
+  "display_width": 800,
+  "display_height": 480,
+  "use_framebuffer": false,
+  "enable_streaming_tts": false,
+  "enable_ui": false,
+  "local_location": "Kingston, CA"
+}
