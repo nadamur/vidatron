@@ -1,8 +1,11 @@
 {
   "first_time_setup_complete": true,
+  "user_profile": {
+    "name": ""
+  },
   "face_customization": {
     "selected_eyes": "Round",
-    "selected_mouth": "Curved"
+    "selected_mouth": "Happy"
   },
   "font_settings": {
     "style": "Roboto",
@@ -62,11 +65,77 @@
       ],
       "mood": "calm",
       "description": "Take a break and move around"
+    },
+    {
+      "text": "Take a mindful breath",
+      "action": null,
+      "icon": null,
+      "icon_path": null,
+      "face_expression": null,
+      "trigger_type": "Every X Minutes",
+      "trigger_time": null,
+      "interval_minutes": 120,
+      "repeat_settings": "daily",
+      "is_active": true,
+      "accent": [
+        0.6,
+        0.65,
+        1.0,
+        1.0
+      ],
+      "mood": "calm",
+      "description": "Pause for 60 seconds and breathe deeply.",
+      "id": "5450f126-fbb0-4295-bdb0-7d14bfe2aa9d"
+    },
+    {
+      "text": "Take a short walk",
+      "action": "stretch",
+      "icon": null,
+      "icon_path": "assets/icons/stretch.png",
+      "face_expression": null,
+      "trigger_type": "Every X Minutes",
+      "trigger_time": null,
+      "interval_minutes": 180,
+      "repeat_settings": "daily",
+      "is_active": true,
+      "accent": [
+        1.0,
+        0.72,
+        0.35,
+        1.0
+      ],
+      "mood": "happy",
+      "description": "Move around for 3-5 minutes.",
+      "id": "2c03ad59-337c-4472-8a9c-816b8a102d85"
+    },
+    {
+      "id": "f5a8612a-e8a0-4cbf-933e-b2f886afbdfa",
+      "text": "Get up and stretch",
+      "icon": null,
+      "icon_path": "assets/icons/stretch.png",
+      "action": "stretch",
+      "face_expression": null,
+      "trigger_type": "Specific Time",
+      "trigger_time": "19:17",
+      "interval_minutes": null,
+      "repeat_settings": "daily",
+      "is_active": true,
+      "accent": [
+        1.0,
+        0.55,
+        0.8,
+        1.0
+      ],
+      "mood": "calm",
+      "description": "Stand, stretch shoulders and back."
     }
   ],
   "last_fired": {
-    "b98e8401-6b74-490f-8e18-8864c84b7b68": 1770869798.524891,
-    "be4878f8-63d7-456f-9599-4279cfe71116": 1770869738.509013
+    "b98e8401-6b74-490f-8e18-8864c84b7b68": 1774311787.394183,
+    "be4878f8-63d7-456f-9599-4279cfe71116": 1774311787.394183,
+    "5450f126-fbb0-4295-bdb0-7d14bfe2aa9d": 1774310224.094499,
+    "2c03ad59-337c-4472-8a9c-816b8a102d85": 1774305757.595741,
+    "f5a8612a-e8a0-4cbf-933e-b2f886afbdfa": "2026-03-23 19:17"
   },
   "default_reminders_added": true
 }
