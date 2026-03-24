@@ -27,12 +27,10 @@ class UIManager:
         self,
         width: int = 800,
         height: int = 480,
-        assets_path: str = "",
+        assets_path: str = "/home/jansky/jansky/assets/face",
         fps: int = 30,
         use_framebuffer: bool = True
     ):
-        if not assets_path:
-            assets_path = str(Path(__file__).resolve().parent.parent / "assets" / "face")
         self.width = width
         self.height = height
         self.assets_path = Path(assets_path)

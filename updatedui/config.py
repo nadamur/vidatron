@@ -53,9 +53,6 @@ class ConfigManager:
         """
         default_config = {
             "first_time_setup_complete": False,
-            "user_profile": {
-                "name": ""
-            },
             "face_customization": {
                 "selected_eyes": None,      # nullable - can be None or a string identifier
                 "selected_mouth": None       # nullable - can be None or a string identifier
@@ -124,87 +121,67 @@ class ConfigManager:
         self.save_config()
     
     def ensure_default_reminders(self):
-        """Add standard health reminders if they are missing."""
+        """Add default reminders if they haven't been added yet, or update intervals if they exist."""
         reminders = self.config.get("reminders", [])
-
-        existing_texts = {(r.get("text") or "").strip().lower() for r in reminders}
-        standard_defaults = [
-            {
+        
+        # Check if default reminders already exist
+        drink_water_exists = False
+        stretch_exists = False
+        for reminder in reminders:
+            if reminder.get("text") == "Drink water":
+                drink_water_exists = True
+                # Update interval to 1 minute for testing
+                reminder["interval_minutes"] = 1
+            elif reminder.get("text") == "Get up and stretch":
+                stretch_exists = True
+                # Update interval to 2 minutes for testing
+                reminder["interval_minutes"] = 2
+        
+        # Add missing default reminders
+        default_reminders = []
+        if not drink_water_exists:
+            default_reminders.append({
+                "id": str(uuid.uuid4()),
                 "text": "Drink water",
-                "action": "drink",
+                "action": "drink",  # Kivy-drawn stick figure (no image file needed)
                 "icon": None,
-                "icon_path": "assets/icons/drink_water.png",
+                "icon_path": "assets/icons/drink_water.png",  # Optional fallback if file exists
                 "face_expression": None,
                 "trigger_type": "Every X Minutes",
                 "trigger_time": None,
-                "interval_minutes": 60,
+                "interval_minutes": 1,  # Every 1 minute (for testing)
                 "repeat_settings": "daily",
                 "is_active": True,
-                "accent": [0.10, 0.90, 1.00, 1.0],
+                "accent": [0.10, 0.90, 1.00, 1.0],  # Blue
                 "mood": "happy",
-                "description": "Stay hydrated."
-            },
-            {
+                "description": "Stay hydrated!"
+            })
+        if not stretch_exists:
+            default_reminders.append({
+                "id": str(uuid.uuid4()),
                 "text": "Get up and stretch",
-                "action": "stretch",
+                "action": "stretch",  # Kivy-drawn stick figure (no image file needed)
                 "icon": None,
-                "icon_path": "assets/icons/stretch.png",
+                "icon_path": "assets/icons/stretch.png",  # Optional fallback if file exists
                 "face_expression": None,
                 "trigger_type": "Every X Minutes",
                 "trigger_time": None,
-                "interval_minutes": 90,
+                "interval_minutes": 2,  # Every 2 minutes (for testing)
                 "repeat_settings": "daily",
                 "is_active": True,
-                "accent": [0.15, 1.00, 0.55, 1.0],
+                "accent": [0.15, 1.00, 0.55, 1.0],  # Green
                 "mood": "calm",
-                "description": "Stand up, stretch, and reset posture."
-            },
-            {
-                "text": "Take a mindful breath",
-                "action": None,
-                "icon": None,
-                "icon_path": None,
-                "face_expression": None,
-                "trigger_type": "Every X Minutes",
-                "trigger_time": None,
-                "interval_minutes": 120,
-                "repeat_settings": "daily",
-                "is_active": True,
-                "accent": [0.60, 0.65, 1.00, 1.0],
-                "mood": "calm",
-                "description": "Pause for 60 seconds and breathe deeply."
-            },
-            {
-                "text": "Take a short walk",
-                "action": "stretch",
-                "icon": None,
-                "icon_path": "assets/icons/stretch.png",
-                "face_expression": None,
-                "trigger_type": "Every X Minutes",
-                "trigger_time": None,
-                "interval_minutes": 180,
-                "repeat_settings": "daily",
-                "is_active": True,
-                "accent": [1.00, 0.72, 0.35, 1.0],
-                "mood": "happy",
-                "description": "Move around for 3-5 minutes."
-            },
-        ]
-
-        added = False
-        for template in standard_defaults:
-            key = (template.get("text") or "").strip().lower()
-            if key in existing_texts:
-                continue
-            reminder = dict(template)
-            reminder["id"] = str(uuid.uuid4())
-            reminders.append(reminder)
-            existing_texts.add(key)
-            added = True
-
-        if added:
+                "description": "Take a break and move around"
+            })
+        
+        if default_reminders:
+            reminders.extend(default_reminders)
             self.config["reminders"] = reminders
             self.config["default_reminders_added"] = True
+            self.save_config()
+        elif drink_water_exists or stretch_exists:
+            # Updated existing reminders - save the changes
+            self.config["reminders"] = reminders
             self.save_config()
 
 

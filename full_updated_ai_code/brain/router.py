@@ -35,12 +35,7 @@ class Router:
 
     # Keywords for text-based tool detection (using word boundary matching)
     TIME_PHRASES = ["what time", "what's the time", "current time", "what day is it", "what's the date", "what date"]
-    WEATHER_PHRASES = [
-        "weather in", "weather for", "what's the weather", "what is the weather", "how's the weather",
-        "how is the weather", "temperature in", "temperature outside", "weather now", "weather today",
-        "weather like", "forecast", "will it rain", "is it going to rain", "going to rain",
-        "is it hot", "is it cold", "how hot", "how cold", "outside today", "outside like",
-    ]
+    WEATHER_PHRASES = ["weather in", "weather for", "what's the weather", "how's the weather", "temperature in", "weather now", "weather today"]
     NEWS_PHRASES = ["news", "headlines", "what's happening", "whats happening", "current events", "top stories"]
     SYSTEM_PHRASES = ["system status", "how are you doing", "how are you feeling", "your temperature", "cpu temp", "health check", "how's your health", "how you doing"]
     JOKE_PHRASES = ["tell me a joke", "joke", "make me laugh", "something funny", "say something funny"]
@@ -59,8 +54,6 @@ class Router:
         "explain", "describe", "analyze", "compare", "summarize",
         "how does", "why does", "what causes", "tell me about",
         "who is", "who was", "what is", "what was", "when did", "where is",
-        "what colour", "what color", "which colour", "which color",
-        "why is", "why are", "why do", "why does", "meaning of", "define ",
         "history of", "story about", "poem", "song", "essay", "code",
         "help me with", "can you explain", "teach me", "what do you think",
         "give me ideas", "suggest", "recommend", "advice",
@@ -73,33 +66,27 @@ class Router:
     def _is_local_chat(self, user_input: str) -> bool:
         """Check if the input is simple enough for the local model."""
         user_lower = user_input.lower().strip()
-        words = user_lower.split()
-
+        
         # Check if it's a complex/creative task that needs cloud
         for phrase in self.CLOUD_PHRASES:
             if phrase in user_lower:
                 return False  # Send to cloud
-
-        # Most questions with enough words → cloud / general model (not tiny local chat)
-        if "?" in user_input and len(words) >= 4:
-            return False
-        if len(words) >= 7:
-            return False
-        if len(words) >= 5 and any(
-            user_lower.startswith(w) for w in ("what ", "why ", "how ", "who ", "which ", "when ", "where ")
-        ):
-            return False
-
+        
         # Short greetings / simple chat - handle locally
         for phrase in self.LOCAL_PHRASES:
             if phrase in user_lower:
                 return True
-
+        
         # Very short inputs (1-4 words) without question marks - likely simple
+        words = user_lower.split()
         if len(words) <= 4 and "?" not in user_input:
             return True
-
-        # Default: short stuff local, longer → cloud
+        
+        # Questions with "?" that are longer than 4 words - send to cloud
+        if "?" in user_input and len(words) > 4:
+            return False
+            
+        # Default: short stuff local, long stuff cloud
         return len(words) <= 6
 
     def _extract_news_category(self, user_input: str) -> str:
@@ -149,14 +136,6 @@ class Router:
         for phrase in self.TIME_PHRASES:
             if phrase in user_lower:
                 return ToolType.TIME, {}
-
-        if "under the weather" not in user_lower and (
-            "weather" in user_lower
-            or "forecast" in user_lower
-            or ("temperature" in user_lower and ("outside" in user_lower or "today" in user_lower))
-        ):
-            location = self._extract_location(user_input, "")
-            return ToolType.WEATHER, {"location": location}
 
         for phrase in self.WEATHER_PHRASES:
             if phrase in user_lower:

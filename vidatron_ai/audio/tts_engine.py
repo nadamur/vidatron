@@ -23,13 +23,10 @@ class PiperTTS:
     
     def __init__(
         self,
-        model_path: str = "",
+        model_path: str = "/home/jansky/jansky/piper/voices/en_GB-semaine-medium.onnx",
         speaking_rate: float = 1.0,
         speaker_id: int = 0  # For multi-speaker models
     ):
-        project_root = Path(__file__).resolve().parent.parent
-        if not model_path:
-            model_path = str(project_root / "piper" / "voices" / "en_GB-semaine-medium.onnx")
         self.model_path = model_path
         self.speaking_rate = speaking_rate
         self.speaker_id = speaker_id

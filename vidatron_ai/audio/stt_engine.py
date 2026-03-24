@@ -15,13 +15,10 @@ class WhisperSTT:
     def __init__(
         self,
         whisper_path: str = "/usr/local/bin/whisper-cpp",
-        model_path: str = "",
+        model_path: str = "/home/jansky/jansky/whisper.cpp/models/ggml-base.en-q5_0.bin",
         language: str = "en",
         threads: int = 4
     ):
-        project_root = Path(__file__).resolve().parent.parent
-        if not model_path:
-            model_path = str(project_root / "whisper.cpp" / "models" / "ggml-base.en-q5_0.bin")
         self.whisper_path = whisper_path
         self.model_path = model_path
         self.language = language
@@ -31,8 +28,8 @@ class WhisperSTT:
         if not Path(whisper_path).exists():
             # Try alternative paths
             alt_paths = [
-                str(project_root / "whisper.cpp" / "build" / "bin" / "whisper-cli"),
-                str(project_root / "whisper.cpp" / "main"),
+                "/home/jansky/jansky/whisper.cpp/build/bin/whisper-cli",
+                "/home/jansky/jansky/whisper.cpp/main",
             ]
             for alt in alt_paths:
                 if Path(alt).exists():
